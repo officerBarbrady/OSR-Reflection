@@ -1,0 +1,14 @@
+function R_GetSkillLevel(SkillConst: Integer): Integer;
+begin
+  Result := SmartGetFieldArrayInt(0, HookGetSkillLevel, skillconst);
+end;
+
+function R_GetRealSkillLevel(SkillConst: Integer): Integer;
+begin
+  Result := SmartGetFieldArrayInt(0, HookGetRealSkillLevel, skillconst);
+end;
+
+function R_GetSkillExp(SkillConst: Integer): Integer;
+begin
+  Result := SmartGetFieldArrayInt(0, HookGetSkillExp, SkillConst);
+end;

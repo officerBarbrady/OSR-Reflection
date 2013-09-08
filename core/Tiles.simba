@@ -1,0 +1,63 @@
+function R_GetTileGlobal: TPoint;
+var
+  Me: Integer;
+Begin
+  Me := SmartGetFieldObject(0, HookLocalPlayer);
+  Result.X := (SmartGetFieldInt(0, HookGetBaseX) * HookGetBaseXMultiplier) + (SmartGetFieldInt(Me, HookCharacterX) * HookCharacterXMultiplier) div 128;
+  Result.Y := (SmartGetFieldInt(0, HookGetBaseY) * HookGetBaseYMultiplier) + (SmartGetFieldInt(Me, HookCharacterY) * HookCharacterYMultiplier) div 128;
+  SmartFreeObject(Me);
+End;
+
+function R_TileToMM(tile: TPoint): TPoint;
+var
+  CompassAngle: Integer;
+  angle, x, y: extended;
+  temp: TPoint;
+begin
+  CompassAngle := SmartGetFieldInt(0, HookGetCompassAngle) * HookGetCompassAngleMultiplier;
+  angle := - Radians(round(Compassangle / 5.67777));
+  temp := R_GetTileGlobal;
+  x := (tile.x - temp.x) * 4 - 2;
+  y := (temp.y - tile.y) * 4 - 2;
+  result.x := round(x * cos(angle) + y * sin(angle)) + 645;
+  result.y := round(y * cos(angle) - x * sin(angle)) + 85;
+end;
+
+function R_inPolygon(Area: TPointArray): Boolean;
+var
+  xnew, ynew, xold, yold, x1, y1, x2, y2: Cardinal;
+  i, numpoints, inside, X, Y: Integer;
+begin
+  numpoints := Length(Area);
+  X := R_GetTileGlobal.x Y := R_GetTileGlobal.y if (numpoints < 3) then
+    Exit;
+  xold := Area[numpoints - 1].X;
+  yold := Area[numpoints - 1].Y;
+  for i := 0 to (numpoints - 1) do
+  begin
+    xnew := Area[i].X;
+    ynew := Area[i].Y;
+    if (xnew > xold) then
+    begin
+      x1 := xold;
+      x2 := xnew;
+      y1 := yold;
+      y2 := ynew;
+    end
+    else
+    begin
+      x1 := xnew;
+      x2 := xold;
+      y1 := ynew;
+      y2 := yold;
+    end;
+    if (((xnew < X) = (X <= xold)) and ((Y - y1) * (x2 - x1) < (y2 - y1) * (X - x1))) then
+      inside := not inside;
+    xold := xnew;
+    yold := ynew;
+  end;
+  Result := inside <> 0;
+end;
+
+
+

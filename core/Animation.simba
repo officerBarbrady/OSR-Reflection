@@ -1,0 +1,27 @@
+function R_GetAnimation: Integer;
+var
+  Me: Integer;
+begin
+  Me := SmartGetFieldObject(0, HookLocalPlayer);
+  Result := SmartGetFieldInt(me, HookAnimation)  * HookAnimationMultiplier;
+  SmartFreeObject(Me);
+end;
+
+function R_IsAnimating: Boolean;
+begin
+  Result := R_GetAnimation > - 1;
+end;
+
+function WaitForAnimation(timeout: integer): boolean;
+var
+  t: integer;
+begin
+  Result := false;
+  MarkTime(t);
+  while R_GetAnimation = - 1 do
+  begin
+    if (TimeFromMark(t) >= timeout) then
+      Exit;
+  end;
+  Result := true;
+end;

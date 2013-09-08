@@ -1,0 +1,67 @@
+function R_WalkPath(Path: TPointArray): boolean;
+var
+  I, H, T, D, Fails, lP: integer;
+  P, MM, MMF: TPoint;
+begin
+  ColorToleranceSpeed(1);
+  H := High(Path);
+  T := GetSystemTime + 10000 + Random(2000);
+  Fails := 0;
+  lP := 0;
+  while (not Result) and (GetSystemTime < T) and (Fails < 5) do
+  begin
+    if (not LoggedIn()) then
+      Exit;
+    P := R_GetTileGlobal;
+    for I := H downto 0 do
+    begin
+      if ((I - lP) > 3) then
+        Continue
+      else
+        lP := I;
+      MM := R_TileToMM(Path[I]);
+      if MM = MMF then
+        Inc(Fails);
+      D := Distance(MM.X, MM.Y, MMCX, MMCY);
+      if (D < 10) then
+        break
+      else if (D < 70) then
+      begin
+        AL_MissMouse(MM, 0, 0);
+        AL_FastClick(mouse_left);
+        WaitFunc(@ AL_playerWalking, 10, 500);
+        MMF := MM;
+        if (I = H) then
+          FFlag(5)
+        else
+          FFlag(25);
+        T := getSystemTime + 7000 + Random(1000);
+        Break;
+      end;
+    end;
+    Result := (I = H);
+  end;
+  FFlag(5);
+end;
+
+function R_BlindWalk(P: TPoint): Boolean;
+var
+  Tries: Integer;
+  M: TPoint;
+  ctrlPoints: TPointArray;
+begin
+  repeat
+    if (not LoggedIn()) then
+      Exit;
+    M := R_GetTileGlobal;
+    if (M.X = - 1) then
+      Continue;
+    if (Length(ctrlPoints) = 0) then
+      ctrlPoints := TPABetweenPoints(M, P, 5 + Random(2), 2);
+    Inc(Tries);
+    if (Tries > 20) then
+      Exit;
+    Result := walkPath(ctrlPoints);
+  until (Result);
+end;
+
