@@ -1,2 +1,14 @@
 {$i OSR-Reflection/Hooks.simba}
+{$i OSR-Reflection/core/Animation.simba}
+{$i OSR-Reflection/core/NPC.simba}
+{$i OSR-Reflection/core/Object.simba}
+{$i OSR-Reflection/core/Player.simba}
+{$i OSR-Reflection/core/Tiles.simba}
+{$i OSR-Reflection/core/Walking.simba}
+
+
+procedure SetUpReflection;
+begin
+  Writeln('=====TODO Check if hooks are updated=====');
+end;
 
